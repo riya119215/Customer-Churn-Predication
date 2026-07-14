@@ -49,7 +49,7 @@ def predict():
     
 
     
-    inputQuery1 = request.form['query1']
+    inputQuery1 = int(request.form['query1'])
     inputQuery2 = request.form['query2']
     inputQuery3 = request.form['query3']
     inputQuery4 = request.form['query4']
@@ -96,17 +96,18 @@ def predict():
            'MultipleLines', 'InternetService', 'OnlineSecurity', 'OnlineBackup',
            'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies',
            'Contract', 'PaperlessBilling', 'PaymentMethod','tenure_group']])
-    
+    if hasattr(model, "feature_names_in_"):
+       new_df__dummies = new_df__dummies.reindex(columns=model.feature_names_in_, fill_value=0)
     # Align input features to the columns used when training the model
-    cols_path = os.path.join(BASE_DIR, 'model_columns.pkl')
-    if os.path.exists(cols_path):
-        try:
-            model_columns = pickle.load(open(cols_path, 'rb'))
-            # reindex will add missing columns with NaN; fill them with 0 (one-hot columns should be 0)
-            new_df__dummies = new_df__dummies.reindex(columns=model_columns, fill_value=0)
-        except Exception:
-            # If loading columns fails, fall back to whatever columns we currently have (may raise later)
-            pass
+    # cols_path = os.path.join(BASE_DIR, 'model_columns.pkl')
+    # if os.path.exists(cols_path):
+    #     try:
+    #         model_columns = pickle.load(open(cols_path, 'rb'))
+    #         # reindex will add missing columns with NaN; fill them with 0 (one-hot columns should be 0)
+    #         new_df__dummies = new_df__dummies.reindex(columns=model_columns, fill_value=0)
+    #     except Exception:
+    #         # If loading columns fails, fall back to whatever columns we currently have (may raise later)
+    #         pass
 
     
     #final_df=pd.concat([new_df__dummies, new_dummy], axis=1)
